@@ -1,6 +1,24 @@
 services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_ADDR=redis:6379
+      - REDIS_PASS=
+      - BASE_URL=http://localhost:3000
+    depends_on:
+      - redis
+    restart: unless-stopped
+
   redis:
     image: redis:7-alpine
     ports:
       - "6379:6379"
     command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  redis_data:
