@@ -43,7 +43,7 @@ jobs:
         shell: bash
         run: |
           echo "${{ secrets.EC2_SSH_KEY_B64 }}" | base64 -d > key.pem
-          echo "EC2_KEY<<EOF" >> $GITHUB_ENV
+          echo "EC2_SSH_KEY<<EOF" >> $GITHUB_ENV
           cat key.pem >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
