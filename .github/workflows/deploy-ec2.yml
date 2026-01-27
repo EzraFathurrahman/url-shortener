@@ -41,16 +41,19 @@ jobs:
 
     steps:
       - name: Write SSH key
+        shell: bash
         run: |
-          echo "${{ secrets.EC2_SSH_KEY_B64 }}" | base64 -d > key.pem
-          chmod 600 key.pem
+          KEY_PATH="$RUNNER_TEMP/ec2_key.pem"
+          echo "${{ secrets.EC2_SSH_KEY_B64 }}" | base64 -d > "$KEY_PATH"
+          chmod 600 "$KEY_PATH"
+          echo "KEY_PATH=$KEY_PATH" >> $GITHUB_ENV
 
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
-          key_path: key.pem
+          key_path: ${{ env.KEY_PATH }}
           script: |
             set -e
             cd ~/apps/url-shortener
