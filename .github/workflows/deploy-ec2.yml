@@ -38,22 +38,21 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
-
     steps:
-      - name: Write SSH key
+      - name: Decode SSH key to env
         shell: bash
         run: |
-          KEY_PATH="$RUNNER_TEMP/ec2_key.pem"
-          echo "${{ secrets.EC2_SSH_KEY_B64 }}" | base64 -d > "$KEY_PATH"
-          chmod 600 "$KEY_PATH"
-          echo "KEY_PATH=$KEY_PATH" >> $GITHUB_ENV
+          echo "${{ secrets.EC2_SSH_KEY_B64 }}" | base64 -d > key.pem
+          echo "EC2_KEY<<EOF" >> $GITHUB_ENV
+          cat key.pem >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
-          key_path: ${{ env.KEY_PATH }}
+          key: ${{ env.EC2_SSH_KEY }}
           script: |
             set -e
             cd ~/apps/url-shortener
