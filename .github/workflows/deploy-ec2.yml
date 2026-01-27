@@ -28,7 +28,9 @@ jobs:
       - name: Build & Push (latest + sha)
         run: |
           IMAGE="ghcr.io/${{ github.repository }}"
+          IMAGE=$(echo "$IMAGE" | tr '[:upper:]' '[:lower:]')
           SHA="${{ github.sha }}"
+
           docker build -t "$IMAGE:latest" -t "$IMAGE:$SHA" .
           docker push "$IMAGE:latest"
           docker push "$IMAGE:$SHA"
