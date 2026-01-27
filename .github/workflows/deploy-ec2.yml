@@ -40,12 +40,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy on EC2 (docker compose pull + up)
+      - name: Write SSH key
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY_B64 }}" | base64 -d > key.pem
+          chmod 600 key.pem
+
+      - name: Deploy on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
+          key_path: key.pem
           script: |
             set -e
             cd ~/apps/url-shortener
@@ -53,3 +58,4 @@ jobs:
             docker compose up -d
             docker image prune -f
             docker compose ps
+
