@@ -143,3 +143,8 @@ func (h *Handler) Stats(c *fiber.Ctx) error {
 		"hits":    hits,
 	})
 }
+
+// GET /health
+func (h *Handler) HealthCheck(c *fiber.Ctx) error {
+	return c.SendStatus(fiber.StatusOK)
+}
