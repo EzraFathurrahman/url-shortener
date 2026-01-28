@@ -31,8 +31,8 @@ func main() {
 
 	app.Post("/api/shorten", h.Shorten)
 	app.Get("/api/stats/:code", h.Stats)
-	app.Get("/:code", h.Redirect)
 	app.Get("/healthcheck", h.HealthCheck)
+	app.Get("/:code", h.Redirect)
 
 	log.Println("listening on :3000")
 	log.Fatal(app.Listen(":3000"))
